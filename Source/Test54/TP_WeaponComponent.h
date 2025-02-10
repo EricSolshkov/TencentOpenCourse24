@@ -6,6 +6,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "TP_WeaponComponent.generated.h"
 
+class UScoreBoard;
 class ATest54Character;
 
 UCLASS(Blueprintable, BlueprintType, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -57,4 +58,6 @@ protected:
 private:
 	/** The Character holding this weapon*/
 	ATest54Character* Character;
+
+	UScoreBoard* ScoreBoard;
 };

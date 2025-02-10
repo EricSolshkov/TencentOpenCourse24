@@ -2,6 +2,7 @@
 
 #include "Test54Character.h"
 #include "Test54Projectile.h"
+#include "public/ScoreBoard.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -36,6 +37,9 @@ ATest54Character::ATest54Character()
 	//Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 
+	// Create a score board to record score.
+	ScoreBoard = CreateDefaultSubobject<UScoreBoard>(TEXT("ScoreBoard1P"));
+	ScoreBoard->Score = 0;
 }
 
 void ATest54Character::BeginPlay()

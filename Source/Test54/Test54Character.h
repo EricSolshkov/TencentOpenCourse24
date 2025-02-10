@@ -13,6 +13,7 @@ class UCameraComponent;
 class UInputAction;
 class UInputMappingContext;
 struct FInputActionValue;
+class UScoreBoard;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
@@ -36,6 +37,9 @@ class ATest54Character : public ACharacter
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UScoreBoard* ScoreBoard;
 	
 public:
 	ATest54Character();

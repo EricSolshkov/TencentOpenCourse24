@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "ScoreBoard.h"
 #include "Animation/AnimInstance.h"
 #include "Engine/LocalPlayer.h"
 #include "Engine/World.h"
@@ -18,6 +19,7 @@ UTP_WeaponComponent::UTP_WeaponComponent()
 {
 	// Default offset from the character location for projectiles to spawn
 	MuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
+	ScoreBoard = nullptr;
 }
 
 
@@ -44,7 +46,11 @@ void UTP_WeaponComponent::Fire()
 			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 	
 			// Spawn the projectile at the muzzle
-			World->SpawnActor<ATest54Projectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+			ATest54Projectile* Projectile = World->SpawnActor<ATest54Projectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+			if (Projectile)
+			{
+				Projectile->ScoreBoard = ScoreBoard;
+			}
 		}
 	}
 	
@@ -98,6 +104,8 @@ bool UTP_WeaponComponent::AttachWeapon(ATest54Character* TargetCharacter)
 			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &UTP_WeaponComponent::Fire);
 		}
 	}
+
+	ScoreBoard = Cast<UScoreBoard>(Character->GetComponentByClass(UScoreBoard::StaticClass()));
 
 	return true;
 }

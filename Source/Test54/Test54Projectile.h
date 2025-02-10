@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Test54Projectile.generated.h"
 
+class UScoreBoard;
 class USphereComponent;
 class UProjectileMovementComponent;
 
@@ -21,6 +22,10 @@ class ATest54Projectile : public AActor
 	/** Projectile movement component */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovement;
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UScoreBoard* ScoreBoard;
 
 public:
 	ATest54Projectile();

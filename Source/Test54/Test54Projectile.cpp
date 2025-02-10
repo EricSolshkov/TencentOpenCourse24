@@ -1,6 +1,9 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "Test54Projectile.h"
+
+#include "Hitable.h"
+#include "ScoreBoard.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
 
@@ -29,6 +32,8 @@ ATest54Projectile::ATest54Projectile()
 
 	// Die after 3 seconds by default
 	InitialLifeSpan = 3.0f;
+
+	ScoreBoard = nullptr;
 }
 
 void ATest54Projectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
@@ -37,6 +42,12 @@ void ATest54Projectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, 
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
 	{
 		OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
+		UHitable* Hitable = Cast<UHitable>(OtherActor->GetComponentByClass(UHitable::StaticClass()));
+		if(ScoreBoard && Hitable)
+		{
+			ScoreBoard->Score += Hitable->Score;
+			Hitable->OnHit();
+		}
 
 		Destroy();
 	}
