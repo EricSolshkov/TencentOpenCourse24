@@ -7,6 +7,7 @@
 #include "Logging/LogMacros.h"
 #include "Test54Character.generated.h"
 
+class UTP_WeaponComponent;
 class UInputComponent;
 class USkeletalMeshComponent;
 class UCameraComponent;
@@ -40,6 +41,12 @@ class ATest54Character : public ACharacter
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UScoreBoard* ScoreBoard;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool hasWeapon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	UTP_WeaponComponent* WeaponComponent;
 	
 public:
 	ATest54Character();
@@ -70,6 +77,14 @@ public:
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+
+	DECLARE_EVENT_TwoParams(ATest54Chracter, FCharaterHit, ATest54Character*, AActor*);
+	FCharaterHit OnCharacterHit;
+
+	void LinkProjectile(ATest54Projectile* Projectile);
+
+	UFUNCTION()
+	void HandleProjectileHit(ATest54Projectile* Projectile, AActor* OtherActor);
 
 };
 

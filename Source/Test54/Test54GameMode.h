@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "Test54GameMode.generated.h"
 
+class ATest54Projectile;
 class UScoreBoard;
 class UInGameHUDControl;
 
@@ -21,12 +22,12 @@ UCLASS(minimalapi)
 class ATest54GameMode : public AGameModeBase
 {
 	GENERATED_BODY()
-private:
-	UPROPERTY()
-	UClass* InGameHUDClass;
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	APlayerController* PlayerController;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	APawn* MainActor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ETest54GamePhase GamePhase;
@@ -46,18 +47,21 @@ public:
 	UPROPERTY(Category="Gameplay", EditAnywhere, BlueprintReadWrite)
 	float TimeLimit = 120.0f;
 
-	UPROPERTY()
-	UScoreBoard* ScoreBoard;
-
-	UPROPERTY()
-	UInGameHUDControl* InGameHUD;
-
 public:
 	ATest54GameMode();
 
 	virtual void BeginPlay() override;
 	
 	virtual void Tick(float DeltaSeconds) override;
+
+	UFUNCTION()
+	void HandlePlayerHit(ATest54Character* Character, AActor* OtherActor);
+	
+	// def an event with no parameters, called FPlayerHitEvent
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FPlayerHitEvent);
+	
+	UPROPERTY(BlueprintAssignable, Category="Gameplay Events")
+	FPlayerHitEvent OnPlayerHit;
 };
 
 

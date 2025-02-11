@@ -13,6 +13,12 @@ UCLASS(Blueprintable, BlueprintType, ClassGroup=(Custom), meta=(BlueprintSpawnab
 class TEST54_API UTP_WeaponComponent : public USkeletalMeshComponent
 {
 	GENERATED_BODY()
+public:
+	UPROPERTY(BlueprintReadWrite)
+	int Ammo;
+
+	UPROPERTY(BlueprintReadWrite)
+	int MaxAmmo;
 
 public:
 	/** Projectile class to spawn */

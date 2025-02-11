@@ -27,6 +27,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UScoreBoard* ScoreBoard;
 
+	// def an event with two parameters, called FOnProjectileHit
+	DECLARE_EVENT_TwoParams(ATest54Projectile, FOnProjectileHit, ATest54Projectile*, AActor*);
+	
+	FOnProjectileHit OnProjectileHit;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	APawn* Emitter;	
+
 public:
 	ATest54Projectile();
 

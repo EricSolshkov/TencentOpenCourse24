@@ -17,7 +17,6 @@ class TEST54_API ATest54PlayerController : public APlayerController
 	GENERATED_BODY()
 	
 protected:
-
 	/** Input Mapping Context to be used for player input */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UInputMappingContext* InputMappingContext;

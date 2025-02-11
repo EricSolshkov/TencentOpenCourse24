@@ -1,6 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "Test54Character.h"
+#include "TP_WeaponComponent.h"
 #include "Test54Projectile.h"
 #include "public/ScoreBoard.h"
 #include "Animation/AnimInstance.h"
@@ -40,6 +41,11 @@ ATest54Character::ATest54Character()
 	// Create a score board to record score.
 	ScoreBoard = CreateDefaultSubobject<UScoreBoard>(TEXT("ScoreBoard1P"));
 	ScoreBoard->Score = 0;
+
+	hasWeapon = false;
+	WeaponComponent = nullptr;
+
+	AutoReceiveInput = EAutoReceiveInput::Player0;
 }
 
 void ATest54Character::BeginPlay()
@@ -69,6 +75,17 @@ void ATest54Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	{
 		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
+}
+
+void ATest54Character::LinkProjectile(ATest54Projectile* Projectile)
+{
+	Projectile->OnProjectileHit.AddUObject(this, &ATest54Character::HandleProjectileHit);
+}
+
+void ATest54Character::HandleProjectileHit(ATest54Projectile* Projectile, AActor* OtherActor)
+{
+	if (Projectile->Emitter == this)
+		OnCharacterHit.Broadcast(this, OtherActor);
 }
 
 

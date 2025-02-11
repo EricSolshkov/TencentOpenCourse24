@@ -8,9 +8,10 @@
 #include "Blueprint/UserWidget.h"
 #include "GameFramework/PlayerController.h"
 #include "UObject/ConstructorHelpers.h"
-#include "Public/InGameHUDControl.h"
 #include "EngineUtils.h"
 #include "Hitable.h"
+#include "Test54PlayerController.h"
+#include "Test54Projectile.h"
 
 ATest54GameMode::ATest54GameMode()
 	: Super()
@@ -18,11 +19,11 @@ ATest54GameMode::ATest54GameMode()
 	// set default pawn class to our Blueprinted character
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnClassFinder(TEXT("/Game/FirstPerson/Blueprints/BP_FirstPersonCharacter"));
 	DefaultPawnClass = PlayerPawnClassFinder.Class;
-
-	InGameHUDClass = nullptr;
+	PlayerControllerClass = ATest54PlayerController::StaticClass();
 	PlayerController = nullptr;
-	ScoreBoard = nullptr;
 	GameState = nullptr;
+	GamePhase = ETest54GamePhase::InGame;
+	MainActor = nullptr;
 }
 
 void ATest54GameMode::BeginPlay()
@@ -31,22 +32,12 @@ void ATest54GameMode::BeginPlay()
 
 	GamePhase = ETest54GamePhase::InGame;
 	
-	InGameHUDClass = LoadClass<UUserWidget>(nullptr, TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/BP_InGameHUD.BP_InGameHUD_C'"));
+	PlayerController = GetWorld()->GetFirstPlayerController();
+	MainActor = PlayerController->GetPawn();
+
+	auto* atc = Cast<ATest54Character>(MainActor);
+	atc->OnCharacterHit.AddUObject(this, &ATest54GameMode::HandlePlayerHit);
 	
-	if(InGameHUDClass)
-	{
-		PlayerController = GetWorld()->GetFirstPlayerController();
-		if(PlayerController)
-		{
-			ScoreBoard = Cast<UScoreBoard>(PlayerController->GetPawn()->GetComponentByClass(UScoreBoard::StaticClass()));
-			InGameHUD = Cast<UInGameHUDControl>(CreateWidget(PlayerController, InGameHUDClass));
-			if(InGameHUD)
-			{
-				InGameHUD->AddToViewport();
-				InGameHUD->UpdateTimeLimit(TimeLimit);
-			}
-		}
-	}
 
 	// 随机使一部分Hitable变成BonusHitable
 	for(TActorIterator<AActor> It(GetWorld()); It; ++It)
@@ -89,12 +80,12 @@ void ATest54GameMode::Tick(float DeltaSeconds)
 			GamePhase = ETest54GamePhase::GameOver;
 			LogSummary();
 		}
-		if(InGameHUD)
-		{
-			InGameHUD->UpdateTimeLimit(TimeLimit);
-			if(ScoreBoard)
-				InGameHUD->UpdateScore(ScoreBoard->Score);
-		}
 	}
 	
+}
+
+void ATest54GameMode::HandlePlayerHit(ATest54Character* Character, AActor* OtherActor)
+{
+	UE_LOG(LogTemp, Log, TEXT("Playey hit event triggers."));
+	OnPlayerHit.Broadcast();
 }

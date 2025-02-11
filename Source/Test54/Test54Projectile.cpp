@@ -34,6 +34,8 @@ ATest54Projectile::ATest54Projectile()
 	InitialLifeSpan = 3.0f;
 
 	ScoreBoard = nullptr;
+
+	Emitter = nullptr;
 }
 
 void ATest54Projectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
@@ -47,8 +49,10 @@ void ATest54Projectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, 
 		{
 			ScoreBoard->Score += Hitable->Score;
 			Hitable->OnHit();
+			// We dispatch out hit event here
+			OnProjectileHit.Broadcast(this, OtherActor);
 		}
-
+		
 		Destroy();
 	}
 }

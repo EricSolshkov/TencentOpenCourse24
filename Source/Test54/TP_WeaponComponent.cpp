@@ -20,12 +20,14 @@ UTP_WeaponComponent::UTP_WeaponComponent()
 	// Default offset from the character location for projectiles to spawn
 	MuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
 	ScoreBoard = nullptr;
+	MaxAmmo = 64;
+	Ammo = MaxAmmo;
 }
 
 
 void UTP_WeaponComponent::Fire()
 {
-	if (Character == nullptr || Character->GetController() == nullptr)
+	if (Character == nullptr || Character->GetController() == nullptr || Ammo <= 0)
 	{
 		return;
 	}
@@ -50,6 +52,11 @@ void UTP_WeaponComponent::Fire()
 			if (Projectile)
 			{
 				Projectile->ScoreBoard = ScoreBoard;
+				Projectile->Emitter = Character;
+
+				Character->LinkProjectile(Projectile);
+				
+				Ammo -= 1;
 			}
 		}
 	}
